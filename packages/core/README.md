@@ -117,6 +117,9 @@ app.mount('#app')
 | `inline-mode` | `boolean` | `false` | 是否启用内联模式 |
 | `existing-latex` | `string` | `""` | 预设的LaTeX代码 |
 | `show-theme-toggle` | `boolean` | `true` | 是否显示主题切换按钮 |
+| `symbol-width` | `number \| string` | 不传 | 符号按钮固定宽度（如 `40`、`"2.5rem"`），默认随容器自适应 |
+| `symbol-height` | `number \| string` | 不传 | 符号按钮固定高度（默认内联跟随宽度、弹窗 `50px`） |
+| `symbol-gap` | `number \| string` | `8` | 符号按钮间距 |
 
 #### Events
 

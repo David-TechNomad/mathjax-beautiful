@@ -665,13 +665,14 @@
     .symbols-content {
       .symbols-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-        gap: 8px;
+        grid-template-columns: var(--math-symbol-grid, repeat(auto-fill, minmax(45px, 1fr)));
+        gap: var(--math-symbol-gap, 8px);
         margin-bottom: 20px;
         // 移除独立滚动，使用父容器的滚动
 
         .symbol-button {
-          aspect-ratio: 1;
+          height: var(--math-symbol-button-height, auto);
+          aspect-ratio: var(--math-symbol-aspect, 1);
           border: 1px solid var(--math-editor-border);
           background: var(--math-editor-bg);
           border-radius: 6px;
@@ -1740,8 +1741,8 @@
 
       .symbols-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-        gap: 8px;
+        grid-template-columns: var(--math-symbol-grid, repeat(auto-fill, minmax(50px, 1fr)));
+        gap: var(--math-symbol-gap, 8px);
         margin-bottom: 20px;
         padding: 4px;
         // 移除独立滚动，使用父容器的滚动
@@ -1750,7 +1751,7 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          height: 50px;
+          height: var(--math-symbol-button-height, 50px);
           border: 1px solid var(--math-editor-border);
           border-radius: 8px;
           background: var(--math-editor-bg);

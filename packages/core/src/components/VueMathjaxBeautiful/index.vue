@@ -4,7 +4,7 @@
     v-if="inlineMode"
     class="vue-mathjax-beautiful-inline"
     :class="{ 'theme-dark': internalTheme === 'dark', 'theme-light': internalTheme === 'light' }"
-    :style="customThemeVars"
+    :style="editorStyleVars"
   >
     <!-- 编辑器内容 -->
     <div class="editor-container">
@@ -174,7 +174,7 @@
           v-if="visible"
           class="vue-mathjax-beautiful-dialog"
           :class="{ 'theme-dark': internalTheme === 'dark', 'theme-light': internalTheme === 'light', 'show': visible }"
-          :style="{ ...dialogStyle, ...customThemeVars }"
+          :style="{ ...dialogStyle, ...editorStyleVars }"
           @click.stop
         >
       <!-- 头部 -->
@@ -406,6 +406,11 @@ const props = withDefaults(
     scale?: number;
     fontSize?: string;
     
+    // 符号面板尺寸自定义（默认随容器自适应，传入后固定为指定尺寸）
+    symbolWidth?: number | string;
+    symbolHeight?: number | string;
+    symbolGap?: number | string;
+    
     // 功能控制
     readonly?: boolean;
     showSymbols?: boolean;
@@ -593,6 +598,35 @@ const customThemeVars = computed(() => {
     '--math-editor-input-border': themeSettings.inputBorder,
   };
 });
+
+// 符号面板尺寸 CSS 变量（可覆盖默认网格/按钮尺寸）
+const symbolStyleVars = computed(() => {
+  const vars: Record<string, string> = {};
+  const toCss = (value?: number | string) =>
+    value === undefined || value === null || value === ''
+      ? undefined
+      : typeof value === 'number'
+        ? `${value}px`
+        : value;
+
+  const w = toCss(props.symbolWidth);
+  const h = toCss(props.symbolHeight);
+  const g = toCss(props.symbolGap);
+  if (w) vars['--math-symbol-grid'] = `repeat(auto-fill, minmax(${w}, ${w}))`;
+  if (h) {
+    vars['--math-symbol-button-height'] = h;
+    // 显式指定高度时禁用内联默认的 aspect-ratio 正方形约束
+    vars['--math-symbol-aspect'] = 'auto';
+  }
+  if (g) vars['--math-symbol-gap'] = g;
+  return vars;
+});
+
+// 合并主题变量与符号尺寸变量
+const editorStyleVars = computed(() => ({
+  ...customThemeVars.value,
+  ...symbolStyleVars.value,
+}));
 
 // 监听器
 watch(

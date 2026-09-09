@@ -9,10 +9,19 @@ export default defineConfig({
   plugins: [vue()],
   
   resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-      '@vue-mathjax-editor/core': resolve(__dirname, '../../packages/core/src')
-    }
+    alias: [
+      // 样式入口需在包名前匹配，否则会被下面规则误吞
+      {
+        find: 'vue-mathjax-beautiful/dist/style.css',
+        replacement: resolve(__dirname, '../../packages/core/src/styles/index.scss'),
+      },
+      // 开发模式直接指向包源码，避免依赖未构建的 dist 产物并支持 HMR
+      {
+        find: 'vue-mathjax-beautiful',
+        replacement: resolve(__dirname, '../../packages/core/src/index.ts'),
+      },
+      { find: '@', replacement: resolve(__dirname, 'src') },
+    ],
   },
 
   css: {
