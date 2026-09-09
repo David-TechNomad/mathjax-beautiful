@@ -8,9 +8,11 @@ export default {
     features: 'Features',
     examples: 'Examples',
     docs: 'Documentation',
+    updates: 'Updates',
     toggleTheme: 'Toggle Theme',
     openMenu: 'Open Menu',
     language: 'Language',
+    framework: 'Framework',
   },
 
   // Theme
@@ -29,17 +31,17 @@ export default {
 
   // Page Title
   page: {
-    title: 'Vue MathJax Beautiful',
-    subtitle: 'Beautiful professional math formula editor',
+    title: 'MathJax Beautiful',
+    subtitle: 'Vue / React math formula editor',
   },
 
   // Hero Section
   hero: {
-    badge: 'Professional Math Formula Editor',
-    title: 'Vue Math Formula',
+    badge: 'Cross-framework Formula Editor',
+    title: 'Vue / React Math Formula',
     titleHighlight: 'Editor',
-    description: 'Professional math formula editor component library, provides 240+ symbol panels, 38 formula templates, supports LaTeX syntax',
-    technologies: ['Vue 3', 'TypeScript', 'MathJax', 'LaTeX'],
+    description: 'A math formula editor component library for Vue and React, with 240+ symbol panels, 38 formula templates, and LaTeX syntax support',
+    technologies: ['Vue 3', 'React', 'TypeScript', 'MathJax', 'LaTeX'],
     getStarted: 'Get Started',
     viewSource: 'View Source',
     scrollHint: 'Explore Powerful Features',
@@ -53,7 +55,7 @@ export default {
   // Home page content
   home: {
     quickStart: {
-      description: 'Get started with Vue MathJax Beautiful and experience professional mathematical formula editing',
+      description: 'Get started with MathJax Beautiful and experience Vue / React formula editing',
       tryDemo: 'Try Demo',
       viewDocs: 'View Documentation',
       badge: 'Get Started Now',
@@ -145,7 +147,7 @@ export default {
       },
       easyIntegration: {
         title: 'Easy Integration',
-        description: 'Provides Vue 3 components, supports TypeScript, easy to integrate into existing projects',
+        description: 'Provides Vue 3 and React components, supports TypeScript, and is easy to integrate into existing projects',
       },
     },
   },
@@ -216,6 +218,8 @@ export default {
     showFormulaExamplesDesc: 'Show formula examples',
     readonlyDesc: 'Read-only mode, disable editing functions',
     autoFocusDesc: 'Auto focus to input field',
+    wrapFormula: 'Wrap Formula',
+    wrapFormulaDesc: 'Automatically wrap formula with $ or $$ delimiters (inline mode uses $, dialog mode uses $$)',
     showSymbolsDesc: 'Show symbol panel',
     showPreviewDesc: 'Show live preview',
     showThemeToggleDesc: 'Show theme toggle button',
@@ -420,7 +424,6 @@ export default {
   docs: {
     title: 'Documentation',
     description: 'Complete usage guide and API documentation',
-    
     toc: {
       title: 'Table of Contents',
       quickLinks: 'Quick Links',
@@ -430,6 +433,7 @@ export default {
       basicUsage: 'Basic Usage',
       coreComponents: 'Core Components',
       beautifulApi: 'VueMathjaxBeautiful API',
+      advancedFeatures: 'Advanced Features',
       
       examples: 'Examples & Best Practices',
     },
@@ -445,6 +449,12 @@ export default {
         optional: '(optional)',
         quickImport: 'Quick Import',
         cdn: 'CDN Import',
+        localMathjaxTitle: 'Local MathJax (Recommended)',
+        localMathjaxDesc: 'Fixes “Failed to initialize MathJax” in restricted networks, intranet, or offline setups.',
+        localMathjaxStep1: 'pnpm add mathjax',
+        localMathjaxStep2: 'Copy node_modules/mathjax/es5 to public/mathjax',
+        localMathjaxStep3: 'Include /mathjax/es5/tex-svg.js in your page',
+        localMathjaxTip: 'If it still fails, check the script path and ensure network requests return 200.',
       },
 
       basicUsage: {
@@ -485,6 +495,14 @@ export default {
           insert: 'Triggered when formula is inserted (latex: string)',
           cancel: 'Triggered when operation is cancelled',
         },
+      },
+
+      advancedFeatures: {
+        title: 'Advanced Features',
+        themeSystem: 'Theme System',
+        mobileOptimization: 'Mobile Optimization',
+        lazyLoading: 'MathJax Lazy Loading',
+        caching: 'Caching System',
       },
 
 
@@ -597,23 +615,91 @@ export default {
     },
   },
 
+  // Updates
+  updates: {
+    title: 'Updates',
+    subtitle: 'Track each release and fix for easier review and verification',
+    badge: 'Release Notes',
+    lastUpdated: 'Last Updated: Mar 2026',
+    empty: 'No updates yet.',
+    entries: [
+      {
+        version: '1.3.4',
+        date: '2026-03-26',
+        typeLabel: 'Optimization',
+        title: 'Code Quality & ESLint Compliance',
+        summary: 'Comprehensive ESLint error and warning fixes to improve code maintainability and type safety.',
+        items: [
+          'Fixed regex issues: Removed unnecessary escape characters, optimized control character handling.',
+          'Cleaned unused variables: Removed redundant code like symbolDisplayCache, themeButtonTitle.',
+          'Unified error handling: Replaced console statements with logger utility for standardized error logging.',
+          'Fixed type definitions: Added eslint-disable comments for necessary any types.',
+          'Optimized imports: Removed unused imports like Ref, vi, beforeEach.',
+          'Build validation passed: TypeScript compilation error-free, core package quality improved.'
+        ]
+      },
+      {
+        version: '1.3.0',
+        date: '2026-03-20',
+        typeLabel: 'Major',
+        title: 'LaTeX Utilities Comprehensive Upgrade',
+        summary: 'latex.ts core module adds smart recognition, format conversion, content protection and more features.',
+        items: [
+          'Extended formula matching: Supports equation*, align*, gather, displaymath and 10 LaTeX formats.',
+          'Smart currency recognition: Distinguishes $100 (currency) from $x^2$ (formula) automatically.',
+          'Unicode symbol preprocessing: √(x) auto-converts to $\\sqrt{x}$, supports ∞, ≤, ≥ etc.',
+          'Escape character fix: Resolves JavaScript misinterpretation of \\times, \\frac etc.',
+          'Formula protection system: Prevents Markdown parsers from breaking formulas with \\\\ like matrices.',
+          'LaTeX document conversion: Supports AI-generated complete LaTeX documents to Markdown.',
+          'Pure LaTeX auto-wrap: Detects LaTeX code without delimiters and auto-adds $...$.',
+          'Fill-in-the-blank underlines: 3+ consecutive underlines auto-convert to solid underline style.',
+          'Smart code block handling: Identifies and correctly processes fake code blocks containing LaTeX.'
+        ]
+      },
+      {
+        version: '1.2.3',
+        date: '2026-02-27',
+        typeLabel: 'Fix',
+        title: 'Stable local MathJax loading',
+        summary: 'Prefer local static assets to improve reliability in restricted networks.',
+        items: [
+          'Prefer local /mathjax/tex-svg.js and /mathjax/es5/tex-svg.js paths.',
+          'Fallback to CDN automatically when local files are unavailable.',
+          'Added local assets guide and verification tips.'
+        ]
+      },
+      {
+        version: '1.2.3',
+        date: '2026-02-27',
+        typeLabel: 'New',
+        title: 'Demo and docs layout refresh',
+        summary: 'Improved demo navigation and documentation structure.',
+        items: [
+          'Refined landing and demo layouts.',
+          'Adjusted documentation navigation and sections.'
+        ]
+      }
+    ]
+  },
+
   // Footer
   footer: {
-    description: 'Provides powerful mathematical formula editing capabilities for Vue 3 applications, supports LaTeX syntax and real-time preview.',
+    description: 'Provides powerful mathematical formula editing capabilities for Vue 3 and React applications, with LaTeX syntax and real-time preview.',
     resources: 'Resources',
     community: 'Community',
     documentation: 'Documentation',
     examples: 'Examples',
     apiReference: 'API Reference',
+    updates: 'Updates',
     changelog: 'Changelog',
     github: 'GitHub',
     issues: 'Issue Tracker',
     discussions: 'Discussions',
     contributing: 'Contributing',
-    copyright: '© 2025 Vue MathJax Beautiful. All rights reserved.',
+    copyright: '© 2025 MathJax Beautiful. All rights reserved.',
     author: 'Developed and maintained by 不讲道理的柯里昂',
     madeWith: 'Made with',
-    forVueCommunity: 'for the Vue.js community',
+    forVueCommunity: 'for the Vue / React community',
     privacy: 'Privacy Policy',
     terms: 'Terms of Service',
   },
@@ -626,8 +712,8 @@ export default {
 
   // Sample Content
   sampleContent: {
-    welcome: '**Welcome to Vue MathJax Beautiful!**',
-    intro: 'This is a powerful mathematical formula editor designed specifically for Vue 3.',
+    welcome: '**Welcome to MathJax Beautiful!**',
+    intro: 'This is a powerful mathematical formula editor component library for Vue 3 and React.',
     mainFeatures: '## Main Features',
     richText: '- **Rich Text Editing**: Supports *italic*, **bold**, __underline__, ~~strikethrough~~',
     mathFormulas: '- **Mathematical Formulas**: Complete LaTeX syntax support',
@@ -676,7 +762,7 @@ export default {
       overview: {
         title: '1. Overview',
         subtitle: 'Privacy Protection Commitment',
-        content: 'Vue MathJax Beautiful (hereinafter referred to as "this product") is committed to protecting user privacy. This privacy policy explains how we collect, use, and protect your personal information. Using this product indicates your agreement to the data processing methods described in this privacy policy.'
+        content: 'MathJax Beautiful (hereinafter referred to as "this product") is committed to protecting user privacy. This privacy policy explains how we collect, use, and protect your personal information. Using this product indicates your agreement to the data processing methods described in this privacy policy.'
       },
       dataCollection: {
         title: '2. Information Collection',
@@ -767,19 +853,19 @@ export default {
   // Terms of Service Page
   terms: {
     title: 'Terms of Service',
-    subtitle: 'These terms govern your use of Vue MathJax Beautiful. Please read them carefully',
+    subtitle: 'These terms govern your use of MathJax Beautiful. Please read them carefully',
     badge: 'Terms of Service',
     lastUpdated: 'Last Updated: January 2025',
     sections: {
       overview: {
         title: '1. Overview',
         subtitle: 'Terms Description',
-        content: 'Welcome to Vue MathJax Beautiful (hereinafter referred to as "this product"). These Terms of Service (hereinafter referred to as "terms") set forth the conditions and rules for your use of this product. Using this product indicates your agreement to comply with these terms. If you do not agree to these terms, please do not use this product.'
+        content: 'Welcome to MathJax Beautiful (hereinafter referred to as "this product"). These Terms of Service (hereinafter referred to as "terms") set forth the conditions and rules for your use of this product. Using this product indicates your agreement to comply with these terms. If you do not agree to these terms, please do not use this product.'
       },
       productDescription: {
         title: '2. Product Description',
         subtitle: 'Features',
-        description: 'Vue MathJax Beautiful is a Vue 3-based mathematical formula editor component library that provides the following features:',
+        description: 'MathJax Beautiful is a mathematical formula editor component library for Vue 3 and React that provides the following features:',
         features: [
           'Professional mathematical formula editing functionality',
           '240+ mathematical symbol panels',
@@ -889,4 +975,4 @@ export default {
       }
     }
   },
-}; 
+};

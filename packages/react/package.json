@@ -1,0 +1,68 @@
+{
+  "name": "react-mathjax-beautiful",
+  "version": "1.0.2",
+  "description": "A React 18 MathJax formula editor component",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "main": "./dist/react-mathjax-beautiful.umd",
+  "module": "./dist/react-mathjax-beautiful.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-mathjax-beautiful.js",
+      "require": "./dist/react-mathjax-beautiful.umd",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css",
+    "./dist/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "math",
+    "editor",
+    "mathjax",
+    "formula",
+    "typescript",
+    "latex"
+  ],
+  "author": "不讲道理的柯里昂 <15096061897@163.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zzq-github/mathjax-beautiful.git",
+    "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/zzq-github/mathjax-beautiful/issues"
+  },
+  "homepage": "https://github.com/zzq-github/mathjax-beautiful/tree/master/packages/react#readme",
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "dompurify": "^3.4.8",
+    "mathjax": "^3.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.3",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "typescript": "~5.3.0",
+    "vite": "^5.0.10",
+    "vite-plugin-dts": "^3.6.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

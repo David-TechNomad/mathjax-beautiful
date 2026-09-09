@@ -4,67 +4,53 @@ on:
   push:
     branches: [main, master]
     paths:
+      - 'packages/**'
       - 'examples/playground/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/deploy-demo.yml'
   workflow_dispatch:
 
-# 设置权限
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 只允许一个并发部署
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "store_path=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.store_path }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build core package
-        run: |
-          cd packages/core
-          npm run build
+      - name: Build packages
+        run: pnpm build
 
       - name: Build demo
-        run: |
-          cd examples/playground
-          npm run build
+        run: pnpm --filter playground build
         env:
-          VITE_BASE_URL: /vue-mathjax-beautiful/
+          VITE_BASE_URL: /mathjax-beautiful/
+
+      - name: Disable Jekyll
+        run: touch examples/playground/dist/.nojekyll
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -83,4 +69,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4

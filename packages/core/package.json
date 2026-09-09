@@ -1,11 +1,12 @@
 {
   "name": "vue-mathjax-beautiful",
-  "version": "1.0.0",
+  "version": "1.4.1",
   "description": "🚀 精简、高效的 Vue 3 数学公式编辑器组件库",
   "type": "module",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "main": "./dist/vue-mathjax-beautiful.umd",
   "module": "./dist/vue-mathjax-beautiful.js",
@@ -16,11 +17,13 @@
       "require": "./dist/vue-mathjax-beautiful.umd",
       "types": "./dist/index.d.ts"
     },
+    "./style.css": "./dist/style.css",
     "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vue-tsc -p tsconfig.json && vite build",
+    "type-check": "vue-tsc -p tsconfig.json",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
@@ -42,16 +45,17 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zzq-github/vue-mathjax-beautiful.git"
+    "url": "git+https://github.com/zzq-github/mathjax-beautiful.git"
   },
   "bugs": {
-    "url": "https://github.com/zzq-github/vue-mathjax-beautiful/issues"
+    "url": "https://github.com/zzq-github/mathjax-beautiful/issues"
   },
-  "homepage": "https://github.com/zzq-github/vue-mathjax-beautiful#readme",
+  "homepage": "https://github.com/zzq-github/mathjax-beautiful#readme",
   "peerDependencies": {
     "vue": "^3.3.0"
   },
   "dependencies": {
+    "dompurify": "^3.4.8",
     "mathjax": "^3.2.2"
   },
   "devDependencies": {
@@ -64,4 +68,4 @@
     "vue": "^3.3.11",
     "vue-tsc": "^1.8.25"
   }
-} 
+}

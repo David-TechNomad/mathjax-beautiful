@@ -7,10 +7,12 @@ export default {
     editorConfig: '编辑器配置',
     features: '功能特性',
     examples: '示例',
-    docs: '文档',
+    docs: '使用文档',
+    updates: '更新说明',
     toggleTheme: '切换主题',
     openMenu: '打开菜单',
     language: '语言',
+    framework: '框架',
   },
 
   // 主题
@@ -29,17 +31,17 @@ export default {
 
   // 页面标题
   page: {
-    title: 'Vue MathJax Beautiful',
-    subtitle: '精美专业的数学公式编辑器',
+    title: 'MathJax Beautiful',
+    subtitle: 'Vue / React 数学公式编辑器',
   },
 
   // 英雄区域
   hero: {
-    badge: '专业数学公式编辑器',
-    title: 'Vue 数学公式',
+    badge: '跨框架数学公式编辑器',
+    title: 'Vue / React 数学公式',
     titleHighlight: '编辑器',
-    description: '专业的数学公式编辑器组件库，提供 240+ 符号面板、38 个公式模板，支持 LaTeX 语法',
-    technologies: ['Vue 3', 'TypeScript', 'MathJax', 'LaTeX'],
+    description: '面向 Vue 和 React 的数学公式编辑器组件库，提供 240+ 符号面板、38 个公式模板，支持 LaTeX 语法',
+    technologies: ['Vue 3', 'React', 'TypeScript', 'MathJax', 'LaTeX'],
     getStarted: '开始使用',
     viewSource: '查看源码',
     scrollHint: '体验强大功能',
@@ -53,7 +55,7 @@ export default {
   // 首页内容
   home: {
     quickStart: {
-      description: '快速开始使用 Vue MathJax Beautiful，体验专业的数学公式编辑功能',
+      description: '快速开始使用 MathJax Beautiful，体验 Vue / React 的数学公式编辑能力',
       tryDemo: '在线演示',
       viewDocs: '查看文档',
       badge: '立即开始',
@@ -145,7 +147,7 @@ export default {
       },
       easyIntegration: {
         title: '易于集成',
-        description: '提供 Vue 3 组件，支持 TypeScript，易于集成到现有项目中',
+        description: '同时提供 Vue 3 与 React 组件，支持 TypeScript，易于集成到现有项目中',
       },
     },
   },
@@ -216,6 +218,8 @@ export default {
     showFormulaExamplesDesc: '显示公式示例',
     readonlyDesc: '只读模式，禁用编辑功能',
     autoFocusDesc: '自动聚焦到输入框',
+    wrapFormula: '自动包裹公式',
+    wrapFormulaDesc: '自动在公式前后添加 $ 或 $$ 包裹符（内联模式用 $，弹窗模式用 $$）',
     showSymbolsDesc: '显示符号面板',
     showPreviewDesc: '显示实时预览',
     showThemeToggleDesc: '显示主题切换按钮',
@@ -420,7 +424,6 @@ export default {
   docs: {
     title: '使用文档',
     description: '详细的组件使用指南和API文档',
-    
     toc: {
       title: '目录',
       quickLinks: '快速链接',
@@ -430,6 +433,7 @@ export default {
       basicUsage: '基本使用',
       coreComponents: '核心组件',
       beautifulApi: 'VueMathjaxBeautiful API',
+      advancedFeatures: '高级特性',
       
       examples: '示例和最佳实践',
     },
@@ -444,6 +448,12 @@ export default {
         optional: '(可选)',
         quickImport: '快速导入',
         cdn: 'CDN 引入',
+        localMathjaxTitle: '本地 MathJax 引入（推荐）',
+        localMathjaxDesc: '解决 Failed to initialize MathJax 等问题，适用于国内网络、公司内网与离线部署。',
+        localMathjaxStep1: 'pnpm add mathjax',
+        localMathjaxStep2: '将 node_modules/mathjax/es5 复制到 public/mathjax',
+        localMathjaxStep3: '在页面中引入 /mathjax/es5/tex-svg.js',
+        localMathjaxTip: '若仍报错，请确认本地脚本路径可访问，或检查 console/network 请求是否 200。',
       },
       
       basicUsage: {
@@ -484,6 +494,15 @@ export default {
           cancel: '用户点击取消按钮或关闭弹窗时触发',
         },
       },
+
+      advancedFeatures: {
+        title: '高级特性',
+        themeSystem: '主题系统',
+        mobileOptimization: '移动端优化',
+        lazyLoading: 'MathJax 懒加载',
+        caching: '缓存系统',
+      },
+      
       
 
       
@@ -595,23 +614,91 @@ export default {
     },
   },
 
+  // 更新说明
+  updates: {
+    title: '更新说明',
+    subtitle: '记录每次功能更新与问题修复，便于回溯与验证',
+    badge: '更新记录',
+    lastUpdated: '最后更新时间：2026年3月',
+    empty: '暂无更新记录。',
+    entries: [
+      {
+        version: '1.3.4',
+        date: '2026-03-26',
+        typeLabel: '优化',
+        title: '代码质量与 ESLint 规范修复',
+        summary: '全面修复 ESLint 错误与警告，提升代码可维护性和类型安全。',
+        items: [
+          '修复正则表达式问题：移除不必要的转义字符，优化控制字符处理。',
+          '清理未使用变量：移除 symbolDisplayCache、themeButtonTitle 等冗余代码。',
+          '统一错误处理：将 console 语句替换为 logger 工具，规范错误日志。',
+          '修复类型定义：添加 eslint-disable 注释处理必要的 any 类型。',
+          '优化导入语句：移除未使用的 Ref、vi、beforeEach 等导入。',
+          '构建验证通过：TypeScript 编译无错误，核心包质量提升。'
+        ]
+      },
+      {
+        version: '1.3.0',
+        date: '2026-03-20',
+        typeLabel: '重大更新',
+        title: 'LaTeX 工具函数全面升级',
+        summary: 'latex.ts 核心模块新增智能识别、格式转换、内容保护等多项功能。',
+        items: [
+          '扩展公式匹配：支持 equation*、align*、gather、displaymath 等 10 种 LaTeX 格式。',
+          '智能货币识别：自动区分 $100（货币）与 $x^2$（公式），避免误解析。',
+          'Unicode 符号预处理：√(x) 自动转为 $\\sqrt{x}$，支持 ∞、≤、≥ 等符号。',
+          '转义字符修复：解决 \\times、\\frac 等被 JavaScript 错误解析的问题。',
+          '公式保护系统：防止 Markdown 解析器破坏矩阵等包含 \\\\ 的公式。',
+          'LaTeX 文档转换：支持 AI 生成的完整 LaTeX 文档转换为 Markdown。',
+          '纯 LaTeX 自动包裹：检测无分隔符的 LaTeX 代码并自动添加 $...$。',
+          '填空题下划线：连续 3+ 下划线自动转为实线下划线样式。',
+          '代码块智能处理：识别并正确处理包含 LaTeX 的假代码块。'
+        ]
+      },
+      {
+        version: '1.2.3',
+        date: '2026-02-27',
+        typeLabel: '修复',
+        title: '本地 MathJax 加载稳定性优化',
+        summary: '优先使用本地静态资源，内网与大陆环境加载更稳定。',
+        items: [
+          '本地优先加载 /mathjax/tex-svg.js 与 /mathjax/es5/tex-svg.js。',
+          '加载失败自动回退到 CDN。',
+          '新增本地资源说明与验证方式。'
+        ]
+      },
+      {
+        version: '1.2.3',
+        date: '2026-02-27',
+        typeLabel: '新增',
+        title: '演示与文档结构优化',
+        summary: '完善演示页面结构，提升浏览和使用体验。',
+        items: [
+          '首页与演示页布局优化。',
+          '文档导航与内容组织调整。'
+        ]
+      }
+    ]
+  },
+
   // 页脚
   footer: {
-    description: '为 Vue 3 应用提供强大的数学公式编辑功能，支持 LaTeX 语法和实时预览。',
+    description: '为 Vue 3 与 React 应用提供强大的数学公式编辑功能，支持 LaTeX 语法和实时预览。',
     resources: '资源',
     community: '社区',
     documentation: '文档',
     examples: '示例',
     apiReference: 'API 参考',
+    updates: '更新说明',
     changelog: '更新日志',
     github: 'GitHub',
     issues: '问题反馈',
     discussions: '讨论区',
     contributing: '贡献指南',
-    copyright: '© 2025 Vue MathJax Beautiful. All rights reserved.',
+    copyright: '© 2025 MathJax Beautiful. All rights reserved.',
     author: '由 不讲道理的柯里昂 开发维护',
     madeWith: 'Made with',
-    forVueCommunity: 'for the Vue.js community',
+    forVueCommunity: 'for the Vue / React community',
     privacy: '隐私政策',
     terms: '使用条款',
   },
@@ -624,8 +711,8 @@ export default {
 
   // 示例内容
   sampleContent: {
-    welcome: '**欢迎使用 Vue MathJax Beautiful！**',
-    intro: '这是一个功能强大的数学公式编辑器，专为 Vue 3 设计。',
+    welcome: '**欢迎使用 MathJax Beautiful！**',
+    intro: '这是一个面向 Vue 3 与 React 的数学公式编辑器组件库。',
     mainFeatures: '## 主要特性',
     richText: '- **富文本编辑**：支持 *斜体*、**粗体**、__下划线__、~~删除线~~',
     mathFormulas: '- **数学公式**：完整支持 LaTeX 语法',
@@ -674,7 +761,7 @@ export default {
       overview: {
         title: '1. 概述',
         subtitle: '隐私保护承诺',
-        content: 'Vue MathJax Beautiful（以下简称"本产品"）致力于保护用户隐私。本隐私政策说明了我们如何收集、使用和保护您的个人信息。使用本产品即表示您同意本隐私政策中描述的数据处理方式。'
+        content: 'MathJax Beautiful（以下简称"本产品"）致力于保护用户隐私。本隐私政策说明了我们如何收集、使用和保护您的个人信息。使用本产品即表示您同意本隐私政策中描述的数据处理方式。'
       },
       dataCollection: {
         title: '2. 信息收集',
@@ -765,19 +852,19 @@ export default {
   // 使用条款页面
   terms: {
     title: '使用条款',
-    subtitle: '本条款规定了您使用 Vue MathJax Beautiful 的条件和规则，请仔细阅读',
+    subtitle: '本条款规定了您使用 MathJax Beautiful 的条件和规则，请仔细阅读',
     badge: '使用条款',
     lastUpdated: '最后更新时间：2025年1月',
     sections: {
       overview: {
         title: '1. 概述',
         subtitle: '条款说明',
-        content: '欢迎使用 Vue MathJax Beautiful（以下简称"本产品"）。本使用条款（以下简称"条款"）规定了您使用本产品的条件和规则。使用本产品即表示您同意遵守这些条款。如果您不同意这些条款，请不要使用本产品。'
+        content: '欢迎使用 MathJax Beautiful（以下简称"本产品"）。本使用条款（以下简称"条款"）规定了您使用本产品的条件和规则。使用本产品即表示您同意遵守这些条款。如果您不同意这些条款，请不要使用本产品。'
       },
       productDescription: {
         title: '2. 产品描述',
         subtitle: '功能特性',
-        description: 'Vue MathJax Beautiful 是一个基于 Vue 3 的数学公式编辑器组件库，提供以下功能：',
+        description: 'MathJax Beautiful 是一个面向 Vue 3 与 React 的数学公式编辑器组件库，提供以下功能：',
         features: [
           '专业的数学公式编辑功能',
           '240+ 数学符号面板',
@@ -887,4 +974,4 @@ export default {
       }
     }
   },
-}; 
+};

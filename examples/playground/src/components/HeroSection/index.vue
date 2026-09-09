@@ -12,10 +12,18 @@
       <div class="absolute top-1/2 left-1/12 w-16 h-16 bg-pink-400/10 rounded-full blur-md animate-pulse delay-500" />
       
       <!-- 数学符号装饰 -->
-      <div class="absolute top-20 left-10 text-white/10 text-6xl font-bold select-none rotate-12">∑</div>
-      <div class="absolute bottom-20 right-10 text-white/10 text-5xl font-bold select-none -rotate-12">∫</div>
-      <div class="absolute top-1/3 right-20 text-white/10 text-4xl font-bold select-none rotate-45">π</div>
-      <div class="absolute bottom-1/3 left-20 text-white/10 text-3xl font-bold select-none -rotate-45">α</div>
+      <div class="absolute top-20 left-10 text-white/10 text-6xl font-bold select-none rotate-12">
+        ∑
+      </div>
+      <div class="absolute bottom-20 right-10 text-white/10 text-5xl font-bold select-none -rotate-12">
+        ∫
+      </div>
+      <div class="absolute top-1/3 right-20 text-white/10 text-4xl font-bold select-none rotate-45">
+        π
+      </div>
+      <div class="absolute bottom-1/3 left-20 text-white/10 text-3xl font-bold select-none -rotate-45">
+        α
+      </div>
       
       <!-- 网格背景 -->
       <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px]" />
@@ -90,7 +98,10 @@
             <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur" />
           </button>
           
-          <button @click="handleViewSource" class="group inline-flex items-center justify-center rounded-2xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-base font-semibold text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105 min-w-[160px]">
+          <button
+            class="group inline-flex items-center justify-center rounded-2xl border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-base font-semibold text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105 min-w-[160px]"
+            @click="handleViewSource"
+          >
             <GithubIcon class="mr-2 h-5 w-5 transition-transform group-hover:rotate-12" />
             <span>{{ t('hero.viewSource') }}</span>
           </button>
@@ -101,8 +112,18 @@
           <div class="flex flex-col items-center gap-3">
             <span class="text-xs text-blue-200 font-medium uppercase tracking-wide">{{ t('hero.scrollHint') }}</span>
             <div class="flex flex-col items-center animate-bounce">
-              <svg class="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              <svg
+                class="w-5 h-5 text-white/60"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
               </svg>
             </div>
           </div>
@@ -118,17 +139,18 @@ import { Zap as ZapIcon, Github as GithubIcon } from 'lucide-vue-next';
 import { useI18n } from '../../composables/useI18n';
 
 // 国际化功能
-const { t, currentLocale } = useI18n();
+const { t, tm } = useI18n();
 
 // 添加技术栈数组的计算属性
 const heroTechnologies = computed(() => {
-  const zhTech = ['Vue 3', 'TypeScript', 'MathJax', 'LaTeX'];
-  const enTech = ['Vue 3', 'TypeScript', 'MathJax', 'LaTeX'];
-  return currentLocale.value.code === 'zh-CN' ? zhTech : enTech;
+  const technologies = tm('hero.technologies');
+  return Array.isArray(technologies)
+    ? technologies.filter((tech): tech is string => typeof tech === 'string')
+    : [];
 });
 
 const handleViewSource = () => {
-  window.open('https://github.com/zzq-github/vue-mathjax-beautiful', '_blank');
+  window.open('https://github.com/zzq-github/mathjax-beautiful', '_blank');
 };
 </script>
 
@@ -195,6 +217,7 @@ const handleViewSource = () => {
 .tech-delay-1 { animation-delay: 0.9s; }
 .tech-delay-2 { animation-delay: 1.0s; }
 .tech-delay-3 { animation-delay: 1.1s; }
+.tech-delay-4 { animation-delay: 1.2s; }
 
 /* 按钮悬停光晕效果 */
 .group:hover .absolute.blur {
@@ -211,4 +234,4 @@ const handleViewSource = () => {
     transform: scale(1);
   }
 }
-</style> 
+</style>

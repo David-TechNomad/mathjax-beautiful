@@ -13,32 +13,40 @@
           <h1
             class="text-lg md:text-xl font-bold text-gray-900 dark:text-white transition-colors duration-300 truncate"
           >
-            <span class="hidden sm:inline">Vue MathJax Beautiful</span>
-            <span class="sm:hidden">Vue MathJax</span>
+            <span class="hidden sm:inline">MathJax Beautiful</span>
+            <span class="sm:hidden">MathJax</span>
           </h1>
-          <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300 hidden sm:block">
+          <p
+            class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-300 hidden sm:block"
+          >
             {{ t('page.subtitle') }}
           </p>
         </div>
       </div>
-      
+
       <!-- 桌面端导航 -->
-      <nav class="hidden md:flex items-center space-x-8">
+      <nav class="hidden lg:flex items-center space-x-6">
         <router-link
           to="/"
           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/' }"
-        >{{ t('nav.home') }}</router-link>
+        >
+          {{ t('nav.home') }}
+        </router-link>
         <router-link
           to="/demo"
           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/demo' }"
-        >{{ t('nav.onlineDemo') }}</router-link>
+        >
+          {{ t('nav.onlineDemo') }}
+        </router-link>
         <router-link
           to="/config"
           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/config' }"
-        >{{ t('nav.config') }}</router-link>
+        >
+          {{ t('nav.config') }}
+        </router-link>
         <!-- <router-link
           to="/editor-config"
           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -48,19 +56,82 @@
           to="/docs"
           class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/docs' }"
-        >{{ t('nav.docs') }}</router-link>
+        >
+          {{ t('nav.docs') }}
+        </router-link>
+        <router-link
+          to="/updates"
+          class="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/updates' }"
+        >
+          {{ t('nav.updates') }}
+        </router-link>
+
+        <!-- 框架切换器 -->
+        <div
+          class="relative !ml-4"
+          data-framework-menu
+        >
+          <button
+            type="button"
+            class="relative flex h-9 min-w-9 items-center justify-center rounded-lg bg-gray-100 px-3 text-sm font-bold text-gray-600 transition-all duration-300 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            :aria-label="t('nav.framework')"
+            :title="activeFrameworkOption.label"
+            @click="toggleFrameworkMenu"
+          >
+            {{ activeFrameworkOption.shortLabel }}
+          </button>
+
+          <Transition name="language-menu">
+            <div
+              v-if="showFrameworkMenu"
+              class="absolute right-0 top-full z-50 mt-2 w-40 rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+              @click.stop
+            >
+              <button
+                v-for="framework in frameworkOptions"
+                :key="framework.value"
+                type="button"
+                class="flex w-full items-center gap-3 px-4 py-2 text-left text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                :class="{
+                  'bg-blue-50 !text-blue-600 dark:bg-blue-900/20 dark:!text-blue-300':
+                    framework.value === activeFramework,
+                }"
+                @click="handleFrameworkChange(framework.value)"
+              >
+                <span class="w-5 text-sm font-bold">{{ framework.shortLabel }}</span>
+                <span class="text-sm font-medium">{{ framework.label }}</span>
+                <svg
+                  v-if="framework.value === activeFramework"
+                  class="ml-auto h-4 w-4 text-blue-600 dark:text-blue-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          </Transition>
+        </div>
 
         <!-- 语言切换器 -->
-        <div class="relative" data-language-menu>
+        <div
+          class="relative"
+          data-language-menu
+        >
           <button
-            @click="$emit('toggleLanguageMenu')"
             class="relative p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 group flex items-center gap-1"
             :aria-label="t('nav.language')"
             :title="t('nav.language')"
+            @click="$emit('toggleLanguageMenu')"
           >
             <GlobeIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
-          
+
           <!-- 语言下拉菜单 -->
           <Transition name="language-menu">
             <div
@@ -71,11 +142,12 @@
               <button
                 v-for="locale in availableLocales"
                 :key="locale.code"
-                @click="handleLanguageChange(locale.code)"
                 class="w-full px-4 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 text-gray-700 dark:text-gray-200"
                 :class="{
-                  'bg-blue-50 dark:bg-blue-900/20 !text-blue-600 dark:!text-blue-300': locale.code === currentLocale.code
+                  'bg-blue-50 dark:bg-blue-900/20 !text-blue-600 dark:!text-blue-300':
+                    locale.code === currentLocale.code,
                 }"
+                @click="handleLanguageChange(locale.code)"
               >
                 <span class="text-lg">{{ locale.flag }}</span>
                 <span class="text-sm font-medium">{{ locale.name }}</span>
@@ -98,10 +170,10 @@
 
         <!-- 主题切换按钮 -->
         <button
-          @click="$emit('toggleTheme')"
           class="relative p-2 !ml-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 group"
           :aria-label="isDark ? t('theme.dark') : t('theme.light')"
           :title="isDark ? t('theme.switchToLight') : t('theme.switchToDark')"
+          @click="$emit('toggleTheme')"
         >
           <div class="relative w-5 h-5">
             <!-- 太阳图标 -->
@@ -132,18 +204,72 @@
       </nav>
 
       <!-- 移动端导航 -->
-      <div class="flex md:hidden items-center space-x-2">
-        <!-- 语言切换器 -->
-        <div class="relative" data-language-menu>
+      <div class="flex lg:hidden items-center space-x-2">
+        <!-- 框架切换器 -->
+        <div
+          class="relative"
+          data-framework-menu
+        >
           <button
-            @click="$emit('toggleLanguageMenu')"
+            type="button"
+            class="relative flex h-9 min-w-9 items-center justify-center rounded-lg bg-gray-100 px-3 text-sm font-bold text-gray-600 transition-all duration-300 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            :aria-label="t('nav.framework')"
+            :title="activeFrameworkOption.label"
+            @click="toggleFrameworkMenu"
+          >
+            {{ activeFrameworkOption.shortLabel }}
+          </button>
+
+          <Transition name="language-menu">
+            <div
+              v-if="showFrameworkMenu"
+              class="absolute right-0 top-full z-50 mt-2 w-36 rounded-lg border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+              @click.stop
+            >
+              <button
+                v-for="framework in frameworkOptions"
+                :key="framework.value"
+                type="button"
+                class="flex w-full items-center gap-2 px-3 py-2 text-left text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700"
+                :class="{
+                  'bg-blue-50 !text-blue-600 dark:bg-blue-900/20 dark:!text-blue-300':
+                    framework.value === activeFramework,
+                }"
+                @click="handleFrameworkChange(framework.value)"
+              >
+                <span class="w-4 text-sm font-bold">{{ framework.shortLabel }}</span>
+                <span class="text-sm font-medium">{{ framework.label }}</span>
+                <svg
+                  v-if="framework.value === activeFramework"
+                  class="ml-auto h-3 w-3 text-blue-600 dark:text-blue-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          </Transition>
+        </div>
+
+        <!-- 语言切换器 -->
+        <div
+          class="relative"
+          data-language-menu
+        >
+          <button
             class="relative p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 group flex items-center gap-1"
             :aria-label="t('nav.language')"
             :title="t('nav.language')"
+            @click="$emit('toggleLanguageMenu')"
           >
             <GlobeIcon class="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
-          
+
           <!-- 移动端语言下拉菜单 -->
           <Transition name="language-menu">
             <div
@@ -154,11 +280,12 @@
               <button
                 v-for="locale in availableLocales"
                 :key="locale.code"
-                @click="handleLanguageChange(locale.code)"
                 class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 text-gray-700 dark:text-gray-200"
                 :class="{
-                  'bg-blue-50 dark:bg-blue-900/20 !text-blue-600 dark:!text-blue-300': locale.code === currentLocale.code
+                  'bg-blue-50 dark:bg-blue-900/20 !text-blue-600 dark:!text-blue-300':
+                    locale.code === currentLocale.code,
                 }"
+                @click="handleLanguageChange(locale.code)"
               >
                 <span>{{ locale.flag }}</span>
                 <span class="text-sm font-medium">{{ locale.name }}</span>
@@ -181,10 +308,10 @@
 
         <!-- 主题切换按钮 -->
         <button
-          @click="$emit('toggleTheme')"
           class="relative p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300 group"
           :aria-label="isDark ? t('theme.dark') : t('theme.light')"
           :title="isDark ? t('theme.switchToLight') : t('theme.switchToDark')"
+          @click="$emit('toggleTheme')"
         >
           <div class="relative w-5 h-5">
             <!-- 太阳图标 -->
@@ -215,9 +342,9 @@
 
         <!-- 汉堡菜单按钮 -->
         <button
-          @click="$emit('toggleMobileMenu')"
           class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
           :aria-label="t('nav.openMenu')"
+          @click="$emit('toggleMobileMenu')"
         >
           <svg
             v-show="!showMobileMenu"
@@ -255,30 +382,30 @@
     <Transition name="mobile-menu">
       <div
         v-if="showMobileMenu"
-        class="md:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-300"
+        class="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-300"
       >
         <div class="container mx-auto px-4 py-4 space-y-3">
           <router-link
             to="/"
-            @click="$emit('closeMobileMenu')"
             class="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/' }"
+            @click="$emit('closeMobileMenu')"
           >
             {{ t('nav.home') }}
           </router-link>
           <router-link
             to="/demo"
-            @click="$emit('closeMobileMenu')"
             class="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/demo' }"
+            @click="$emit('closeMobileMenu')"
           >
             {{ t('nav.onlineDemo') }}
           </router-link>
           <router-link
             to="/config"
-            @click="$emit('closeMobileMenu')"
             class="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/config' }"
+            @click="$emit('closeMobileMenu')"
           >
             {{ t('nav.config') }}
           </router-link>
@@ -292,11 +419,19 @@
           </router-link> -->
           <router-link
             to="/docs"
-            @click="$emit('closeMobileMenu')"
             class="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/docs' }"
+            @click="$emit('closeMobileMenu')"
           >
             {{ t('nav.docs') }}
+          </router-link>
+          <router-link
+            to="/updates"
+            class="block py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            :class="{ '!text-blue-600 dark:!text-blue-400': $route.path === '/updates' }"
+            @click="$emit('closeMobileMenu')"
+          >
+            {{ t('nav.updates') }}
           </router-link>
         </div>
       </div>
@@ -305,12 +440,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
 import { Calculator as CalculatorIcon, Globe as GlobeIcon } from 'lucide-vue-next';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from '../../composables/useI18n';
+import { useFramework } from '../../composables/useFramework';
+import type { PlaygroundFramework } from '../../composables/useFramework';
 
 // 国际化功能
 const { t, currentLocale, availableLocales, changeLocale } = useI18n();
+const { activeFramework, frameworkOptions, setFramework } = useFramework();
+const showFrameworkMenu = ref(false);
+const activeFrameworkOption = computed(
+  () =>
+    frameworkOptions.find((framework) => framework.value === activeFramework.value) ||
+    frameworkOptions[0]
+);
 
 // Props
 defineProps<{
@@ -332,7 +476,31 @@ const handleLanguageChange = (newLocale: string) => {
   changeLocale(newLocale);
 };
 
-// 点击外部关闭菜单的逻辑在父组件中处理
+const toggleFrameworkMenu = () => {
+  showFrameworkMenu.value = !showFrameworkMenu.value;
+};
+
+const handleFrameworkChange = (framework: PlaygroundFramework) => {
+  setFramework(framework);
+  showFrameworkMenu.value = false;
+};
+
+const handleDocumentClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement | null;
+  if (showFrameworkMenu.value && !target?.closest('[data-framework-menu]')) {
+    showFrameworkMenu.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleDocumentClick);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleDocumentClick);
+});
+
+// 语言菜单的外部点击关闭逻辑在父组件中处理。
 </script>
 
 <style scoped>
@@ -367,4 +535,4 @@ const handleLanguageChange = (newLocale: string) => {
   opacity: 0;
   transform: translateY(-8px) scale(0.95);
 }
-</style> 
+</style>

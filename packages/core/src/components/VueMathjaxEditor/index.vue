@@ -13,15 +13,22 @@
     :style="editorStyle"
   >
     <!-- 工具栏 -->
-    <div class="toolbar" :class="props.toolbarClass" v-if="showToolbar">
+    <div
+      v-if="showToolbar"
+      class="toolbar"
+      :class="props.toolbarClass"
+    >
       <!-- 基础格式工具 -->
-      <div class="format-group" v-if="shouldShowTool('bold') || shouldShowTool('italic') || shouldShowTool('underline') || shouldShowTool('strikethrough')">
+      <div
+        v-if="shouldShowTool('bold') || shouldShowTool('italic') || shouldShowTool('underline') || shouldShowTool('strikethrough')"
+        class="format-group"
+      >
         <button
           v-if="shouldShowTool('bold')"
           class="toolbar-btn"
           :class="{ active: isFormatActive('bold') }"
-          @click="toggleFormat('bold')"
           :title="tooltipTexts.bold"
+          @click="toggleFormat('bold')"
         >
           <strong>B</strong>
         </button>
@@ -29,8 +36,8 @@
           v-if="shouldShowTool('italic')"
           class="toolbar-btn"
           :class="{ active: isFormatActive('italic') }"
-          @click="toggleFormat('italic')"
           :title="tooltipTexts.italic"
+          @click="toggleFormat('italic')"
         >
           <em>I</em>
         </button>
@@ -38,8 +45,8 @@
           v-if="shouldShowTool('underline')"
           class="toolbar-btn"
           :class="{ active: isFormatActive('underline') }"
-          @click="toggleFormat('underline')"
           :title="tooltipTexts.underline"
+          @click="toggleFormat('underline')"
         >
           <u>U</u>
         </button>
@@ -47,79 +54,110 @@
           v-if="shouldShowTool('strikethrough')"
           class="toolbar-btn"
           :class="{ active: isFormatActive('strikethrough') }"
-          @click="toggleFormat('strikethrough')"
           :title="tooltipTexts.strikethrough"
+          @click="toggleFormat('strikethrough')"
         >
           <s>S</s>
         </button>
       </div>
 
-      <div class="divider" v-if="(shouldShowTool('bold') || shouldShowTool('italic') || shouldShowTool('underline') || shouldShowTool('strikethrough')) && shouldShowTool('formula')"></div>
+      <div
+        v-if="(shouldShowTool('bold') || shouldShowTool('italic') || shouldShowTool('underline') || shouldShowTool('strikethrough')) && shouldShowTool('formula')"
+        class="divider"
+      />
 
       <!-- 公式工具 -->
-      <div class="math-group" v-if="shouldShowTool('formula')">
-        <button class="toolbar-btn formula-btn" @click="showFormulaEditor" :title="tooltipTexts.formula">
+      <div
+        v-if="shouldShowTool('formula')"
+        class="math-group"
+      >
+        <button
+          class="toolbar-btn formula-btn"
+          :title="tooltipTexts.formula"
+          @click="showFormulaEditor"
+        >
           <span class="fx-icon">fx</span>
           <span>{{ t.editor.toolbar.formulaShort }}</span>
         </button>
       </div>
 
-      <div class="divider" v-if="shouldShowTool('formula') && (shouldShowTool('image') || shouldShowTool('clear') || shouldShowTool('theme'))"></div>
+      <div
+        v-if="shouldShowTool('formula') && (shouldShowTool('image') || shouldShowTool('clear') || shouldShowTool('theme'))"
+        class="divider"
+      />
 
       <!-- 插入工具 -->
-      <div class="insert-group" v-if="shouldShowTool('image') || shouldShowTool('clear') || shouldShowTool('theme')">
+      <div
+        v-if="shouldShowTool('image') || shouldShowTool('clear') || shouldShowTool('theme')"
+        class="insert-group"
+      >
         <input
           v-if="shouldShowTool('image')"
           ref="imageInput"
           type="file"
           :accept="props.allowedImageTypes.join(',')"
-          @change="handleImageUpload"
           style="display: none"
-        />
+          @change="handleImageUpload"
+        >
         <button
           v-if="shouldShowTool('image')"
           class="toolbar-btn image-btn"
-          @click="imageInput?.click()"
           :disabled="uploadLoading || props.readonly"
           :title="tooltipTexts.image"
+          @click="imageInput?.click()"
         >
-          <span v-if="uploadLoading" class="loading-icon">⟳</span>
-          <span v-else class="icon">🖼️</span>
+          <span
+            v-if="uploadLoading"
+            class="loading-icon"
+          >⟳</span>
+          <span
+            v-else
+            class="icon"
+          >🖼️</span>
           <span>{{ t.editor.toolbar.imageShort }}</span>
         </button>
 
-        <div class="divider" v-if="shouldShowTool('image') && (shouldShowTool('clear') || shouldShowTool('theme'))"></div>
+        <div
+          v-if="shouldShowTool('image') && (shouldShowTool('clear') || shouldShowTool('theme'))"
+          class="divider"
+        />
 
         <button 
           v-if="shouldShowTool('clear')"
           class="toolbar-btn clear-btn" 
-          @click="clearFormat" 
-          :title="tooltipTexts.clear"
+          :title="tooltipTexts.clear" 
           :disabled="props.readonly"
+          @click="clearFormat"
         >
           <span class="icon">🧹</span>
           <span>{{ t.editor.toolbar.clearShort }}</span>
         </button>
 
-        <div class="divider" v-if="shouldShowTool('clear') && (shouldShowTool('theme') || availableLocales.length > 1)"></div>
+        <div
+          v-if="shouldShowTool('clear') && (shouldShowTool('theme') || availableLocales.length > 1)"
+          class="divider"
+        />
 
         <button 
           v-if="availableLocales.length > 1"
           class="toolbar-btn language-btn" 
-          @click="toggleLanguage" 
-          :title="locale === 'zh-CN' ? 'Switch to English' : '切换到中文'"
+          :title="locale === 'zh-CN' ? 'Switch to English' : '切换到中文'" 
+          @click="toggleLanguage"
         >
           <span class="icon">🌐</span>
           <span>{{ locale === 'zh-CN' ? '中' : 'EN' }}</span>
         </button>
 
-        <div class="divider" v-if="availableLocales.length > 1 && shouldShowTool('theme')"></div>
+        <div
+          v-if="availableLocales.length > 1 && shouldShowTool('theme')"
+          class="divider"
+        />
 
         <button 
           v-if="shouldShowTool('theme')"
           class="toolbar-btn theme-btn" 
-          @click="toggleTheme" 
-          :title="tooltipTexts.theme"
+          :title="tooltipTexts.theme" 
+          @click="toggleTheme"
         >
           <span class="icon">{{ themeIcon }}</span>
           <span>{{ t.editor.toolbar.theme }}</span>
@@ -135,6 +173,8 @@
         :class="props.editorClass"
         :contenteditable="!props.readonly"
         :spellcheck="props.spellcheck"
+        :placeholder="placeholder"
+        :style="{ minHeight: minHeight, maxHeight: props.maxHeight !== 'none' ? props.maxHeight : undefined }"
         @input="handleInput"
         @beforeinput="handleBeforeInput"
         @keydown="handleKeydown"
@@ -143,14 +183,18 @@
         @blur="handleBlur"
         @mouseup="updateSelection"
         @keyup="updateSelection"
-        :placeholder="placeholder"
-        :style="{ minHeight: minHeight, maxHeight: props.maxHeight !== 'none' ? props.maxHeight : undefined }"
-      ></div>
+      />
 
       <!-- 统计信息 -->
-      <div class="char-counter" v-if="props.showCharCount || props.showWordCount">
+      <div
+        v-if="props.showCharCount || props.showWordCount"
+        class="char-counter"
+      >
         <span>{{ statsDisplay }}</span>
-        <span v-if="props.maxLength" class="limit-info">/ {{ props.maxLength }}</span>
+        <span
+          v-if="props.maxLength"
+          class="limit-info"
+        >/ {{ props.maxLength }}</span>
       </div>
     </div>
 
@@ -171,6 +215,7 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import VueMathjaxBeautiful from '../VueMathjaxBeautiful/index.vue';
 import { convertLatexToSvg, extractLatexFromSvg, initMathJax } from '../../utils/latex';
 import { useI18n } from '../../composables/useI18n';
+import { escapeHtml, sanitizeHtml } from '../../utils/sanitizeHtml';
 
 interface Props {
   // 基础内容控制
@@ -327,6 +372,7 @@ const uploadLoading = ref(false);
 const activeFormats = ref(new Set<string>());
 const autoSaveTimer = ref<number | null>(null);
 const lastSavedContent = ref('');
+const objectUrls = new Set<string>();
 
 // 组件内部主题状态（独立于外部传入的theme）
 const internalTheme = ref(props.theme || 'light');
@@ -335,10 +381,6 @@ const hasUserChangedTheme = ref(false);
 // 主题相关计算属性
 const themeIcon = computed(() => {
   return internalTheme.value === 'dark' ? '☀️' : '🌙';
-});
-
-const themeButtonTitle = computed(() => {
-  return internalTheme.value === 'dark' ? '切换到亮色主题' : '切换到暗色主题';
 });
 
 // 编辑器样式计算
@@ -442,7 +484,7 @@ watch(
     if (newVal !== content.value && editorRef.value) {
       content.value = newVal || '';
       const htmlContent = await convertFromStandardSyntax(newVal || '');
-      editorRef.value.innerHTML = htmlContent;
+      editorRef.value.innerHTML = sanitizeHtml(htmlContent);
       updateStats();
       await nextTick();
       setupFormulaClickEvents();
@@ -488,10 +530,9 @@ const convertFromStandardSyntax = async (content: string): Promise<string> => {
     .replace(/\*(.*?)\*/g, '<em>$1</em>') // 斜体
     .replace(/__(.*?)__/g, '<u>$1</u>') // 下划线
     .replace(/~~(.*?)~~/g, '<s>$1</s>') // 删除线
-    .replace(
-      /!\[([^\]]*)\]\(([^)]*)\)/g,
-      '<img src="$2" alt="$1" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">'
-    )
+    .replace(/!\[([^\]]*)\]\(([^)]*)\)/g, (_match, alt, src) => {
+      return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
+    })
     .replace(/\n/g, '<br>'); // 换行
 
   // 转换LaTeX公式为SVG
@@ -501,7 +542,7 @@ const convertFromStandardSyntax = async (content: string): Promise<string> => {
     console.warn('LaTeX conversion failed:', error);
   }
 
-  return htmlContent;
+  return sanitizeHtml(htmlContent);
 };
 
 // 将HTML内容转换为标准表达式语法
@@ -527,7 +568,7 @@ const convertToStandardSyntax = (editorElement: HTMLElement) => {
     }
   });
 
-  return clonedElement.innerHTML;
+  return sanitizeHtml(clonedElement.innerHTML);
 };
 
 // 格式检查 - 检查当前选区或光标位置的格式状态
@@ -622,7 +663,7 @@ const handleBeforeInput = (event: Event) => {
   if (activeFormats.value.size > 0 && inputEvent.inputType === 'insertText' && inputEvent.data) {
     event.preventDefault();
     
-    let wrappedText = inputEvent.data;
+    let wrappedText = escapeHtml(inputEvent.data);
     const activeFormatsArray = Array.from(activeFormats.value);
     
     // 构建样式对象
@@ -669,7 +710,7 @@ const handleBeforeInput = (event: Event) => {
       range.deleteContents();
       
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = wrappedText;
+      tempDiv.innerHTML = sanitizeHtml(wrappedText);
       const fragment = document.createDocumentFragment();
       
       while (tempDiv.firstChild) {
@@ -723,7 +764,7 @@ const insertFormula = async (latex: string) => {
     }
 
     // 转换LaTeX为SVG
-    const svgHtml = await convertLatexToSvg(`$$${latex}$$`);
+    const svgHtml = sanitizeHtml(await convertLatexToSvg(`$$${latex}$$`));
 
     // 确保编辑器获得焦点
     editorRef.value.focus();
@@ -752,7 +793,7 @@ const insertFormula = async (latex: string) => {
     // 如果SVG转换失败，作为备用方案插入LaTeX文本
     try {
       editorRef.value.focus();
-      document.execCommand('insertHTML', false, `$$${latex}$$`);
+      document.execCommand('insertText', false, `$$${latex}$$`);
       handleInput();
     } catch (fallbackError) {
       console.error('备用插入也失败:', fallbackError);
@@ -823,9 +864,12 @@ const handleImageUpload = async (event: Event) => {
   try {
     // 创建本地预览URL
     const imageUrl = URL.createObjectURL(file);
+    objectUrls.add(imageUrl);
 
     // 插入图片
-    const imgHtml = `<img src="${imageUrl}" alt="${file.name}" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />`;
+    const imgHtml = sanitizeHtml(
+      `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(file.name)}" style="max-width: 100%; height: auto; margin: 8px 0; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />`
+    );
 
     editorRef.value.focus();
     document.execCommand('insertHTML', false, imgHtml);
@@ -919,12 +963,12 @@ const clearSelectionFormat = async (range: Range) => {
   let cleanText = tempContainer.textContent || '';
   
   // 恢复公式和图片的占位符
-  formulas.forEach(({ placeholder }, index) => {
+  formulas.forEach(({ placeholder: _ph }, index) => {
     cleanText = cleanText.replace(`__FORMULA_${index}__`, `__FORMULA_${index}__`);
     cleanText = cleanText.replace(`__SPAN_FORMULA_${index}__`, `__SPAN_FORMULA_${index}__`);
   });
-  
-  images.forEach(({ placeholder }, index) => {
+
+  images.forEach(({ placeholder: _ph }, index) => {
     cleanText = cleanText.replace(`__IMAGE_${index}__`, `__IMAGE_${index}__`);
   });
   
@@ -958,6 +1002,7 @@ const clearSelectionFormat = async (range: Range) => {
       newContainer.innerHTML = newContainer.innerHTML.replace(imagePlaceholder, element.outerHTML);
     }
   });
+  newContainer.innerHTML = sanitizeHtml(newContainer.innerHTML);
   
   // 创建文档片段
   const fragment = document.createDocumentFragment();
@@ -1130,7 +1175,7 @@ const handlePaste = async (event: ClipboardEvent) => {
 
       handleInput();
       setupFormulaClickEvents();
-    } catch (error) {
+    } catch {
       // 如果转换失败，插入纯文本
       document.execCommand('insertText', false, text);
     }
@@ -1147,7 +1192,7 @@ const handlePaste = async (event: ClipboardEvent) => {
           target: {
             files: [file],
           },
-        } as any;
+        } as unknown as Event;
 
         await handleImageUpload(fakeEvent);
       }
@@ -1173,7 +1218,7 @@ onMounted(async () => {
     // 设置初始内容
     if (props.modelValue && editorRef.value) {
       const htmlContent = await convertFromStandardSyntax(props.modelValue);
-      editorRef.value.innerHTML = htmlContent;
+      editorRef.value.innerHTML = sanitizeHtml(htmlContent);
       await nextTick();
       setupFormulaClickEvents();
     }
@@ -1199,6 +1244,8 @@ onUnmounted(() => {
   if (autoSaveTimer.value) {
     window.clearTimeout(autoSaveTimer.value);
   }
+  objectUrls.forEach((url) => URL.revokeObjectURL(url));
+  objectUrls.clear();
 });
 </script>
 
