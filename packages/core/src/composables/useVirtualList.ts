@@ -215,14 +215,12 @@ export function useVirtualGrid<T>(
     });
   };
   
-  // 更新容器内容区宽度（排除左右内边距，避免固定宽度布局溢出）
+  // 更新容器可用宽度
+  // 绝对定位子元素以 padding box 为参照，clientWidth 正好等于该宽度
   const updateContainerWidth = () => {
-    const el = containerRef.value;
-    if (!el) return;
-    const styles = window.getComputedStyle(el);
-    const paddingLeft = Number.parseFloat(styles.paddingLeft) || 0;
-    const paddingRight = Number.parseFloat(styles.paddingRight) || 0;
-    containerWidth.value = Math.max(0, el.clientWidth - paddingLeft - paddingRight);
+    if (containerRef.value) {
+      containerWidth.value = containerRef.value.clientWidth;
+    }
   };
   
   // 滚动到指定索引
