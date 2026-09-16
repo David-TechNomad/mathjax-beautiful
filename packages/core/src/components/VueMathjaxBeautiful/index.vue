@@ -4,7 +4,7 @@
     v-if="inlineMode"
     class="vue-mathjax-beautiful-inline"
     :class="{ 'theme-dark': internalTheme === 'dark', 'theme-light': internalTheme === 'light' }"
-    :style="editorStyleVars"
+    :style="customThemeVars"
   >
     <!-- 编辑器内容 -->
     <div class="editor-container">
@@ -557,20 +557,61 @@ const reactiveFormulaExamples = ref<Symbol[]>([...formulaExamples]);
 
 // 虚拟网格优化 - 符号面板
 const symbolsList = computed(() => currentSymbols.value);
+
+// 符号按钮尺寸默认值（与样式保持一致）
+const SYMBOL_PANEL_HEIGHT = 240;
+const DEFAULT_SYMBOL_ITEM_HEIGHT = 48;
+const DEFAULT_SYMBOL_COLUMN_COUNT = 8;
+const DEFAULT_SYMBOL_GAP = 8;
+
+/** 将 number | string 归一化为像素数值，非法或非正值返回 undefined */
+const toPixel = (value?: number | string): number | undefined => {
+  if (value === undefined || value === null || value === '') return undefined;
+  const pixel = typeof value === 'number' ? value : Number.parseFloat(value);
+  return Number.isFinite(pixel) && pixel > 0 ? pixel : undefined;
+};
+
+const symbolItemHeight = computed(() => toPixel(props.symbolHeight) ?? DEFAULT_SYMBOL_ITEM_HEIGHT);
+const symbolItemGap = computed(() => toPixel(props.symbolGap) ?? DEFAULT_SYMBOL_GAP);
+const symbolItemWidth = computed(() => toPixel(props.symbolWidth));
+
+// 指定宽度时，按容器可用宽度换算列数，保证按钮宽度固定且不会被拉伸
+const symbolGridOptions = () => {
+  const gap = symbolItemGap.value;
+  const width = symbolItemWidth.value;
+  const availableWidth = symbolsContainerWidth.value;
+  const columnCount = width
+    ? Math.max(1, Math.floor((availableWidth + gap) / (width + gap)) || 1)
+    : DEFAULT_SYMBOL_COLUMN_COUNT;
+
+  return {
+    itemHeight: symbolItemHeight.value,
+    columnCount,
+    gap,
+    itemWidth: width,
+    overscan: 2,
+    containerHeight: SYMBOL_PANEL_HEIGHT,
+  };
+};
+
 const {
   containerRef: symbolsContainerRef,
+  containerWidth: symbolsContainerWidth,
+  scrollTop: symbolsScrollTop,
   visibleItems: visibleSymbols,
   visibleRange: symbolsRange,
   getItemStyle: getSymbolItemStyle,
   handleScroll: handleSymbolsScroll,
   updateContainerWidth: updateSymbolsContainerWidth,
-} = useVirtualGrid(symbolsList, {
-  itemHeight: 48,
-  columnCount: 8, // 每行8个符号
-  gap: 8,
-  overscan: 2,
-  containerHeight: 240,
-});
+} = useVirtualGrid(symbolsList, symbolGridOptions);
+
+// 符号渲染尺寸随按钮高度变化，避免按钮变小时图标溢出
+const symbolIconSize = computed(() =>
+  Math.max(14, Math.min(32, Math.round(symbolItemHeight.value * (2 / 3))))
+);
+const symbolIconFontSize = computed(() =>
+  Math.max(10, Math.round(symbolItemHeight.value * 0.375))
+);
 
 // 批量渲染控制
 const renderSymbolItem = async (symbol: Symbol) => {
@@ -587,10 +628,10 @@ const renderSymbolItem = async (symbol: Symbol) => {
     
     const svg = result.getElementsByTagName('svg')[0];
     if (svg) {
-      svg.style.fontSize = '18px';
+      svg.style.fontSize = `${symbolIconFontSize.value}px`;
       svg.style.verticalAlign = 'middle';
-      svg.style.maxWidth = '32px';
-      svg.style.maxHeight = '32px';
+      svg.style.maxWidth = `${symbolIconSize.value}px`;
+      svg.style.maxHeight = `${symbolIconSize.value}px`;
       svg.style.width = 'auto';
       svg.style.height = 'auto';
       svg.setAttribute('shape-rendering', 'geometricPrecision');
@@ -683,35 +724,6 @@ const customThemeVars = computed(() => {
   };
 });
 
-// 符号面板尺寸 CSS 变量（可覆盖默认网格/按钮尺寸）
-const symbolStyleVars = computed(() => {
-  const vars: Record<string, string> = {};
-  const toCss = (value?: number | string) =>
-    value === undefined || value === null || value === ''
-      ? undefined
-      : typeof value === 'number'
-        ? `${value}px`
-        : value;
-
-  const w = toCss(props.symbolWidth);
-  const h = toCss(props.symbolHeight);
-  const g = toCss(props.symbolGap);
-  if (w) vars['--math-symbol-grid'] = `repeat(auto-fill, minmax(${w}, ${w}))`;
-  if (h) {
-    vars['--math-symbol-button-height'] = h;
-    // 显式指定高度时禁用内联默认的 aspect-ratio 正方形约束
-    vars['--math-symbol-aspect'] = 'auto';
-  }
-  if (g) vars['--math-symbol-gap'] = g;
-  return vars;
-});
-
-// 合并主题变量与符号尺寸变量
-const editorStyleVars = computed(() => ({
-  ...customThemeVars.value,
-  ...symbolStyleVars.value,
-}));
-
 // 监听器
 watch(
   () => props.modelValue,
@@ -768,6 +780,34 @@ watch(
   },
   { immediate: true }
 );
+
+// 符号按钮尺寸变化时重新测量容器并回到顶部，避免沿用旧的滚动位置
+watch([symbolItemWidth, symbolItemHeight, symbolItemGap], () => {
+  nextTick(() => {
+    symbolsScrollTop.value = 0;
+    if (symbolsContainerRef.value) {
+      symbolsContainerRef.value.scrollTop = 0;
+    }
+    updateSymbolsContainerWidth();
+    const visibleIndices = new Set<number>(visibleSymbols.value.map((item: { index: number }) => item.index));
+    renderSymbolsQueue(visibleIndices);
+  });
+});
+
+// 符号面板宽度变化时重新换算列数（固定宽度模式下需要）
+let symbolsResizeObserver: ResizeObserver | null = null;
+const observeSymbolsContainer = () => {
+  if (typeof ResizeObserver === 'undefined') return;
+  const el = symbolsContainerRef.value;
+  if (!el) return;
+  if (!symbolsResizeObserver) {
+    symbolsResizeObserver = new ResizeObserver(() => updateSymbolsContainerWidth());
+  }
+  symbolsResizeObserver.disconnect();
+  symbolsResizeObserver.observe(el);
+  updateSymbolsContainerWidth();
+};
+watch(symbolsContainerRef, () => nextTick(observeSymbolsContainer));
 
 // 标记用户是否手动修改过主题
 const hasUserChangedTheme = ref(false);
@@ -1091,6 +1131,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   isUnmounted = true;
+  symbolsResizeObserver?.disconnect();
+  symbolsResizeObserver = null;
   // 清理工作由 useBatchRender 和 useVirtualList 自动处理
 });
 </script>
