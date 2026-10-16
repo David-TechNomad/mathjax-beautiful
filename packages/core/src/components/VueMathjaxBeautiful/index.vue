@@ -550,9 +550,9 @@ const isUppercase = ref(false);
 const internalTheme = ref(props.theme || 'light');
 
 // 创建响应式的符号数据副本
-const reactiveBasicSymbols = ref<Symbol[]>([...basicSymbols]);
-const reactiveGreekSymbols = ref<Symbol[]>([...greekSymbols]);
-const reactiveAdvancedSymbols = ref<Symbol[]>([...advancedSymbols]);
+const reactiveBasicSymbols = ref<Symbol[]>(basicSymbols.map(symbol => ({ ...symbol })));
+const reactiveGreekSymbols = ref<Symbol[]>(greekSymbols.map(symbol => ({ ...symbol })));
+const reactiveAdvancedSymbols = ref<Symbol[]>(advancedSymbols.map(symbol => ({ ...symbol })));
 const reactiveFormulaExamples = ref<Symbol[]>([...formulaExamples]);
 
 // 虚拟网格优化 - 符号面板
@@ -564,15 +564,33 @@ const DEFAULT_SYMBOL_ITEM_HEIGHT = 48;
 const DEFAULT_SYMBOL_COLUMN_COUNT = 8;
 const DEFAULT_SYMBOL_GAP = 8;
 
-/** 将 number | string 归一化为像素数值，非法或非正值返回 undefined */
-const toPixel = (value?: number | string): number | undefined => {
+/** 支持数字以及 px/rem/em；间距可为 0，宽高必须为正数。 */
+const toPixel = (value?: number | string, allowZero = false): number | undefined => {
   if (value === undefined || value === null || value === '') return undefined;
-  const pixel = typeof value === 'number' ? value : Number.parseFloat(value);
-  return Number.isFinite(pixel) && pixel > 0 ? pixel : undefined;
+  let pixel: number;
+  if (typeof value === 'number') {
+    pixel = value;
+  } else {
+    const match = value.trim().match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(px|rem|em)?$/i);
+    if (!match) return undefined;
+    pixel = Number(match[1]);
+    const unit = match[2]?.toLowerCase();
+    if (unit === 'rem' || unit === 'em') {
+      if (typeof window === 'undefined') return undefined;
+      const root = document.documentElement;
+      const rootFontSize = Number.parseFloat(window.getComputedStyle(root).fontSize) || 16;
+      const element = unit === 'em' ? symbolsContainerRef.value : root;
+      const fontSize = element
+        ? Number.parseFloat(window.getComputedStyle(element).fontSize) || rootFontSize
+        : rootFontSize;
+      pixel *= fontSize;
+    }
+  }
+  return Number.isFinite(pixel) && (allowZero ? pixel >= 0 : pixel > 0) ? pixel : undefined;
 };
 
 const symbolItemHeight = computed(() => toPixel(props.symbolHeight) ?? DEFAULT_SYMBOL_ITEM_HEIGHT);
-const symbolItemGap = computed(() => toPixel(props.symbolGap) ?? DEFAULT_SYMBOL_GAP);
+const symbolItemGap = computed(() => toPixel(props.symbolGap, true) ?? DEFAULT_SYMBOL_GAP);
 const symbolItemWidth = computed(() => toPixel(props.symbolWidth));
 
 // 指定宽度时，按容器可用宽度换算列数，保证按钮宽度固定且不会被拉伸
@@ -613,9 +631,38 @@ const symbolIconFontSize = computed(() =>
   Math.max(10, Math.round(symbolItemHeight.value * 0.375))
 );
 
+const applySymbolSvgSize = (svg: SVGElement) => {
+  svg.style.fontSize = `${symbolIconFontSize.value}px`;
+  svg.style.maxWidth = `${symbolIconSize.value}px`;
+  svg.style.maxHeight = `${symbolIconSize.value}px`;
+};
+
+// 更新缓存中的 SVG 即可改变图标尺寸，无需重新执行 MathJax 排版。
+const resizeCachedSymbol = (symbol: Symbol) => {
+  if (!symbol.display) return;
+  const container = document.createElement('div');
+  container.innerHTML = sanitizeHtml(symbol.display);
+  const svg = container.querySelector('svg');
+  if (!svg) return;
+  applySymbolSvgSize(svg);
+  symbol.display = sanitizeHtml(container.innerHTML);
+};
+
+watch([symbolIconSize, symbolIconFontSize], () => {
+  [
+    ...reactiveBasicSymbols.value,
+    ...reactiveGreekSymbols.value,
+    ...reactiveAdvancedSymbols.value,
+  ].forEach(resizeCachedSymbol);
+});
+
 // 批量渲染控制
 const renderSymbolItem = async (symbol: Symbol) => {
-  if (symbol.display || !window.MathJax?.tex2svgPromise) return;
+  if (symbol.display) {
+    resizeCachedSymbol(symbol);
+    return;
+  }
+  if (!window.MathJax?.tex2svgPromise) return;
   
   try {
     const result = await window.MathJax.tex2svgPromise(symbol.latex, {
@@ -628,10 +675,8 @@ const renderSymbolItem = async (symbol: Symbol) => {
     
     const svg = result.getElementsByTagName('svg')[0];
     if (svg) {
-      svg.style.fontSize = `${symbolIconFontSize.value}px`;
+      applySymbolSvgSize(svg);
       svg.style.verticalAlign = 'middle';
-      svg.style.maxWidth = `${symbolIconSize.value}px`;
-      svg.style.maxHeight = `${symbolIconSize.value}px`;
       svg.style.width = 'auto';
       svg.style.height = 'auto';
       svg.setAttribute('shape-rendering', 'geometricPrecision');
